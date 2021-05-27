@@ -53,7 +53,7 @@ jobs:
 
     - uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:
-        commit_message: Commit new datasets
+        commit_message: Commit new Clinical Trials
         branch: ${{ github.head_ref }}
         commit_user_name: Jake Barrett
         commit_user_email: jake.barrett@hdruk.ac.uk

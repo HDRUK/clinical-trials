@@ -1,3 +1,3 @@
 # clinical-trials
 
-[![collect-clinical-trials](https://github.com/mskabirkhan/clinical-trials/actions/workflows/python-app.yml/badge.svg)](https://github.com/mskabirkhan/clinical-trials/actions/workflows/python-app.yml)
+[![collect-clinical-trials](https://github.com/HDRUK/clinical-trials/actions/workflows/collect-clinical-trials.yml/badge.svg)](https://github.com/HDRUK/clinical-trials/actions/workflows/collect-clinical-trials.yml)

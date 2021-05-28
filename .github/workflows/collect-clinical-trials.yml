@@ -55,6 +55,6 @@ jobs:
       with:
         commit_message: Commit new Clinical Trials
         branch: ${{ github.head_ref }}
-        commit_user_name: Jake Barrett
+        commit_user_name: JakeBGitHub
         commit_user_email: jake.barrett@hdruk.ac.uk
         commit_author: Jake Barrett <jake.barrett@hdruk.ac.uk>

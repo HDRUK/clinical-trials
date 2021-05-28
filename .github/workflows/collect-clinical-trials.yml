@@ -5,7 +5,7 @@ name: collect-clinical-trials
 
 on:
   schedule:
-  # Run at 0 minute past every 12th hour
+  # Run at 00:00 on Sunday.
     - cron:  '0 0 * * 0'
   push:
     branches: [ master ]

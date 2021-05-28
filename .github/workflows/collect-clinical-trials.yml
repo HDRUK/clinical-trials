@@ -6,7 +6,7 @@ name: collect-clinical-trials
 on:
   schedule:
   # Run at 0 minute past every 12th hour
-    - cron:  '0 */12 * * *'
+    - cron:  '0 0 * * 0'
   push:
     branches: [ master ]
   pull_request:

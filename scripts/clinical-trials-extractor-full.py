@@ -27,24 +27,25 @@ def find_number_of_pages(ROOT_URL):
 
 def get_full_trials(DOWNLOAD_URL, TOTAL_PAGES):
 
+    print("Extracting full clinical trial data...")
+
     # Get full clinical trial info from all pages
     download_full_pages = []
     for i in range(TOTAL_PAGES):
+
+        page = requests.get(DOWNLOAD_URL.format(QUERY, i + 1), verify=False)
+
         download_full_pages.append(
-            requests.get(DOWNLOAD_URL.format(QUERY, i + 1), verify=False)
+            page.content.decode("utf-8")
         )
 
     # Merge contents of each page together
-    merged_full_download_pages = b""
+    merged_full_download_pages = ""
     for d in download_full_pages:
-        merged_full_download_pages += d.content
-    # TODO: We do not need to create .txt file
-    with open("data/clinical-trials-full.txt", "wb") as f:
-        f.write(merged_full_download_pages)
-    with open("data/clinical-trials-full.txt", encoding="utf8") as f:
-        full_trial_data = f.read()
+        merged_full_download_pages += d
 
-    return full_trial_data
+    return merged_full_download_pages
+
 
 
 def create_list_of_trial_dicts(full_trial_data):

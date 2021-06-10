@@ -286,14 +286,18 @@ def create_key_for_sections(split_full_trial_data):
     return full_trials_list_dict
 
 
-def write_json(data, filename, indent=2):
+def write_json_and_head(data, filename, indent=2, n=100):
     with open(filename, "w") as jsonfile:
         json.dump(data, jsonfile, indent=indent)
+    with open(filename.format("-head-{}".format(n)), "w") as jsonfile:
+        json.dump(data[:n], jsonfile, indent=indent)
+    
 
 
-def write_csv(list_of_flattened_dicts, csv_file):
+def write_csv_and_head(list_of_flattened_dicts, csv_file, n=100):
     df = pd.DataFrame(list_of_flattened_dicts)
     df.to_csv(csv_file, index=None)
+    df.head(n).to_csv(csv_file.format("-head-{}".format(n)), index=None)
 
 
 def main():
@@ -307,8 +311,8 @@ def main():
     # Split trial data and write to json and csv format
     split_full_trial_data = create_list_of_trial_dicts(full_trial_data)
     full_trials_list_dict = create_key_for_sections(split_full_trial_data)
-    write_json(full_trials_list_dict, "data/clinical-trials-full.json")
-    write_csv(split_full_trial_data, r"data/clinical-trials-full.csv")
+    write_json_and_head(full_trials_list_dict, "data/clinical-trials-full{}.json")
+    write_csv_and_head(split_full_trial_data, "data/clinical-trials-full{}.csv")
 
     print("Execution time of query '{}':".format(QUERY), datetime.now() - startTime)
 

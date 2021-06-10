@@ -5,6 +5,7 @@ import re
 import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
+from time import sleep
 
 QUERY = ""  # Insert specific search term. More details here: https://www.clinicaltrialsregister.eu/doc/How_to_Search_EU_CTR.pdf#zoom=100,0,0
 CLINICAL_TRIALS_ROOT_URL = "https://www.clinicaltrialsregister.eu/ctr-search/search?query={}&country=gb".format(
@@ -29,15 +30,41 @@ def get_full_trials(DOWNLOAD_URL, TOTAL_PAGES):
 
     print("Extracting full clinical trial data...")
 
+    NUMBER_ATTEMPTS = 5
+    SLEEP_TIME = 5
+
     # Get full clinical trial info from all pages
     download_full_pages = []
+
     for i in range(TOTAL_PAGES):
-
-        page = requests.get(DOWNLOAD_URL.format(QUERY, i + 1), verify=False)
-
-        download_full_pages.append(
-            page.content.decode("utf-8")
-        )
+        for x in range(NUMBER_ATTEMPTS):
+            try:
+                if x == 0:
+                    print(
+                        "ATTEMPT {}... DOWNLOADING PAGE {} OF {} IN EU CLINICAL TRIALS REGISTER...".format(
+                            x + 1, i + 1, TOTAL_PAGES
+                        )
+                    )
+                    page = requests.get(DOWNLOAD_URL.format(QUERY, i + 1), verify=False)
+                    download_full_pages.append(page.content.decode("utf-8"))
+                    break
+                elif x > 0:
+                    print(
+                        "ATTEMPT {}... DOWNLOADING PAGE {} OF {} IN EU CLINICAL TRIALS REGISTER...".format(
+                            x + 1, i + 1, TOTAL_PAGES
+                        )
+                    )
+                    sleep(SLEEP_TIME)
+                    page = requests.get(DOWNLOAD_URL.format(QUERY, i + 1), verify=False)
+                    download_full_pages.append(page.content.decode("utf-8"))
+                    break
+            except:
+                if x + 1 == NUMBER_ATTEMPTS:
+                    raise Exception(
+                        "ABORTING... MAXIMUM NUMBER OF ATTEMPTS EXCEEDED..."
+                    )
+                else:
+                    pass
 
     # Merge contents of each page together
     merged_full_download_pages = ""
@@ -45,7 +72,6 @@ def get_full_trials(DOWNLOAD_URL, TOTAL_PAGES):
         merged_full_download_pages += d
 
     return merged_full_download_pages
-
 
 
 def create_list_of_trial_dicts(full_trial_data):
@@ -287,16 +313,15 @@ def create_key_for_sections(split_full_trial_data):
 
 
 def write_json_and_head(data, filename, indent=2, n=100):
-    with open(filename, "w") as jsonfile:
+    with open(filename.replace("{}", ""), "w") as jsonfile:
         json.dump(data, jsonfile, indent=indent)
     with open(filename.format("-head-{}".format(n)), "w") as jsonfile:
         json.dump(data[:n], jsonfile, indent=indent)
-    
 
 
 def write_csv_and_head(list_of_flattened_dicts, csv_file, n=100):
     df = pd.DataFrame(list_of_flattened_dicts)
-    df.to_csv(csv_file, index=None)
+    df.to_csv(csv_file.replace("{}", ""), index=None)
     df.head(n).to_csv(csv_file.format("-head-{}".format(n)), index=None)
 
 
@@ -305,6 +330,7 @@ def main():
     startTime = datetime.now()
 
     # Find each trial page and merge contents of txt files
+
     TOTAL_PAGES = find_number_of_pages(CLINICAL_TRIALS_ROOT_URL)
     full_trial_data = get_full_trials(FULL_TRIALS_DOWNLOAD_URL, TOTAL_PAGES)
 

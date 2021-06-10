@@ -1,6 +1,6 @@
 import pandas as pd
 
-CLINICAL_TRIALS_DATA = pd.read_csv("data\clinical-trials-full.csv")
+CLINICAL_TRIALS_DATA = pd.read_csv("data/clinical-trials-full.csv")
 
 
 def select_columns(df):
@@ -89,7 +89,7 @@ def main():
 
     # Save this dataframe as CSV
     clinical_trials_filtered_df.to_csv(
-        "data/clinical-trails-filtered.csv",
+        "analysis/data/clinical-trails-filtered.csv",
         index=False,
     )
 

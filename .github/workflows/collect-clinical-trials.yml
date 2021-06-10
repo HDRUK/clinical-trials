@@ -39,17 +39,21 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         
-    - name: Collect Clinical Trials Summary
-      env:
-          LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
-      run: |
-        mkdir $HOME/secrets
-        gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/secrets/contacts.csv data/contacts.csv.gpg
-        python scripts/clinical-trials-extractor.py
+    # - name: Collect Clinical Trials Summary
+    #   env:
+    #       LARGE_SECRET_PASSPHRASE: ${{ secrets.LARGE_SECRET_PASSPHRASE }}
+    #   run: |
+    #     mkdir $HOME/secrets
+    #     gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output $HOME/secrets/contacts.csv data/contacts.csv.gpg
+    #     python scripts/clinical-trials-extractor.py
         
     - name: Collect Clinical Trials Full
       run: |
         python scripts/clinical-trials-extractor-full.py
+
+    - name: Filter Clinical Trials Full Data
+      run: |
+        python analysis/preprocess.py
 
     - uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:

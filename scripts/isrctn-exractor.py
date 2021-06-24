@@ -87,6 +87,10 @@ def xml_to_json_and_df(xml_filename, json_filename, indent=2):
     # TODO: Dropping trialCentres as it gives many columns (need to fix)
     keys_to_remove = ["@xmlns", "trialCentres"]
 
+    # Deleting description from intervention as it is causing error in csv
+    for i in range(len(doc_flat)):
+        del(doc_flat[i]["trial"]["interventions"]["intervention"]["description"])
+
     for i in range(len(doc_flat)):
         doc_flat[i] = delete_keys_from_dict(doc_flat[i], keys_to_remove)
         doc_flat[i] = flatten_json(doc_flat[i])
@@ -99,12 +103,9 @@ def xml_to_json_and_df(xml_filename, json_filename, indent=2):
     ]
 
     return doc_flat_df
-    # doc_flat_df.to_csv(csv_filename, index=False)
 
 
 def merge_dfs(df1, df2, outfile):
-    # df1 = pd.read_csv(csvfile1)
-    # df2 = pd.read_csv(csvfile2)
     merged_df = df1.append([df2])
     merged_df.to_csv(outfile, index=False)
 

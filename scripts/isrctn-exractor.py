@@ -89,7 +89,7 @@ def xml_to_json_and_df(xml_filename, json_filename, indent=2):
 
     # Deleting description from intervention as it is causing error in csv
     for i in range(len(doc_flat)):
-        del(doc_flat[i]["trial"]["interventions"]["intervention"]["description"])
+        del doc_flat[i]["trial"]["interventions"]["intervention"]["description"]
 
     for i in range(len(doc_flat)):
         doc_flat[i] = delete_keys_from_dict(doc_flat[i], keys_to_remove)
@@ -107,6 +107,9 @@ def xml_to_json_and_df(xml_filename, json_filename, indent=2):
 
 def merge_dfs(df1, df2, outfile):
     merged_df = df1.append([df2])
+    merged_df = merged_df.drop_duplicates(
+        subset=["trial_externalRefs_eudraCTNumber"]
+    )
     merged_df.to_csv(outfile, index=False)
 
 
